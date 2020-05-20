@@ -1,17 +1,16 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 )
 
-func StartWebServer() {
+func New(port string) {
 	router := Router()
-	log.Println("Serving on port", 5000)
-	err := http.ListenAndServe(":5000", router)
-	// err := http.ListenAndServe(":5000"+utils.Env.ServerPort, router)
+	log.Println("Serving on port", port)
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), router)
 	if err != nil {
-		// log.Println("An error occured starting HTTP listener at port", utils.Env.ServerPort)
-		log.Println("Error: " + err.Error())
+		log.Printf("Error: %s\n", err.Error())
 	}
 }

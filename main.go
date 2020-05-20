@@ -1,12 +1,13 @@
 package main
 
 import (
+	"github.com/hfantin/simple-rest-mock/config"
 	"github.com/hfantin/simple-rest-mock/server"
 )
 
 func main() {
 	// handleSigterm()
-	server.StartWebServer()
+	server.New(config.Env.ServerPort)
 }
 
 // func handleSigterm() {
