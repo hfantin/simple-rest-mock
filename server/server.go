@@ -3,12 +3,10 @@ package server
 import (
 	"log"
 	"net/http"
-
-	"github.com/hfantin/simple-rest-mock/routes"
 )
 
 func StartWebServer() {
-	router := routes.New()
+	router := Router()
 	log.Println("Serving on port", 5000)
 	err := http.ListenAndServe(":5000", router)
 	// err := http.ListenAndServe(":5000"+utils.Env.ServerPort, router)
