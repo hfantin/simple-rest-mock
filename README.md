@@ -9,5 +9,5 @@ This project is to help you to mock the responses from a rest api server.
 endpoint: /v1/hello
 file: .files/v1.hello.json
 ```
-4. When you call for localhost:5000/v1/hello, you will as response the content of the file.
+4. When you call for localhost:5000/v1/hello, you will receive as response the content of the file.
 
