@@ -1,7 +1,7 @@
 version: "3.7"
 services:
-  simple-rest-mock:
-    image: simple-rest-mock:latest
+  srm:
+    image: srm:latest
     container_name: srm
     hostname: srm
     ports:
