@@ -14,13 +14,13 @@ import (
 
 const FILE_PATH = ".files"
 
-func Router() *mux.Router {
+func NewRouter() *mux.Router {
 	router := mux.NewRouter()
-	router.PathPrefix("/").HandlerFunc(DefaultHandler)
+	router.PathPrefix("/").HandlerFunc(defaultHandler)
 	return router
 }
 
-func DefaultHandler(w http.ResponseWriter, r *http.Request) {
+func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO get query parameters
 	// TODO get body
 	path := r.URL.Path
@@ -28,11 +28,11 @@ func DefaultHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Executing %s on %s", method, path)
 	json, err := readFile(path)
 	if err != nil {
-		RespondWithError(w, 500, fmt.Sprintf("%s", err))
+		respondWithError(w, 500, fmt.Sprintf("%s", err))
 		return
 	}
 
-	RespondWithJSON(w, http.StatusOK, json)
+	respondWithJSON(w, http.StatusOK, json)
 }
 
 // try to read file, if exists
@@ -53,11 +53,11 @@ func readFile(path string) (map[string]interface{}, error) {
 	return result, err
 }
 
-func RespondWithError(w http.ResponseWriter, code int, message string) {
-	RespondWithJSON(w, code, map[string]string{"error": message})
+func respondWithError(w http.ResponseWriter, code int, message string) {
+	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
-func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
