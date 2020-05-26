@@ -11,3 +11,7 @@ file: .files/v1.hello.json
 ```
 4. When you call for localhost:5000/v1/hello, you will receive the content of the file as response.
 
+
+### Rest api for tests
+- [dogs](https://dog.ceo/api/breeds/image/random)
+

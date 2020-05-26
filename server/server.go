@@ -3,12 +3,14 @@ package server
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/hfantin/simple-rest-mock/config"
 )
 
-func New(port string) *http.Server {
+func New() *http.Server {
 	router := NewRouter()
 	return &http.Server{
-		Addr:    fmt.Sprintf(":%s", port),
+		Addr:    fmt.Sprintf(":%s", config.Env.ServerPort),
 		Handler: router,
 	}
 }
