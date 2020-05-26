@@ -25,13 +25,20 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 		writeFileFromUrl(method, path, body)
 	}
 	log.Printf("Executing %s on %s\n", method, path)
-	json, err := readFile(path)
+	response, err := readFile(path, method)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("%s", err))
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, json)
+	if response.HttpCode >= http.StatusBadRequest {
+		// TODO convert error map to string
+		log.Printf("Error from file: %s", response.Body)
+		respondWithError(w, response.HttpCode, "Error")
+		return
+	}
+
+	respondWithJSON(w, response.HttpCode, response.Body)
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {
