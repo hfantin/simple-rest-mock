@@ -12,9 +12,6 @@ import (
 )
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
-	// TODO get query parameters
-	// TODO get body
-	// try to read from target
 	path := r.URL.Path
 	method := r.Method
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
@@ -22,32 +19,30 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Failed to read body")
 	}
 	if config.Env.WriteFile {
-		writeFileFromUrl(method, path, body)
+		writeFileFromUrl(method, path, r.Header, body)
 	}
 	log.Printf("Executing %s on %s\n", method, path)
 	response, err := readFile(path, method)
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("%s", err))
+		respondWithError(w, http.StatusInternalServerError, map[string]interface{}{"error": fmt.Sprintf("%s", err)})
 		return
 	}
-
 	if response.HttpCode >= http.StatusBadRequest {
-		// TODO convert error map to string
-		log.Printf("Error from file: %s", response.Body)
-		respondWithError(w, response.HttpCode, "Error")
+		respondWithError(w, response.HttpCode, response.Body)
 		return
 	}
-
 	respondWithJSON(w, response.HttpCode, response.Body)
 }
 
-func respondWithError(w http.ResponseWriter, code int, message string) {
-	respondWithJSON(w, code, map[string]string{"error": message})
+func respondWithError(w http.ResponseWriter, code int, body map[string]interface{}) {
+	respondWithJSON(w, code, body)
 }
 
-func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
+func respondWithJSON(w http.ResponseWriter, code int, body map[string]interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	w.Write(response)
+	if len(body) > 0 {
+		response, _ := json.Marshal(body)
+		w.Write(response)
+	}
 }

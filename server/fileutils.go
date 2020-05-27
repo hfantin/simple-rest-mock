@@ -16,21 +16,25 @@ import (
 
 type Response struct {
 	HttpCode int                    `json:"httpCode"`
-	Body     map[string]interface{} `json:"body"`
+	Body     map[string]interface{} `json:"body,omitempty"`
 }
 
 const jsonContentType = "application/json"
 
-func writeFileFromUrl(method, path string, body []byte) {
+func writeFileFromUrl(method, path string, headers http.Header, body []byte) {
 	url := fmt.Sprintf("%s%s", config.Env.TargetServer, path)
-	log.Printf("Writing %s of %s with body %s\n", method, url, body)
+	log.Printf("Writing %s of %s\n", method, url)
 	var resp *http.Response
 	var err error
 	switch method {
-	case http.MethodGet:
-		resp, err = http.Get(url)
-	case http.MethodPost:
-		resp, err = http.Post(url, jsonContentType, bytes.NewBuffer(body))
+	case http.MethodGet,
+		http.MethodPost,
+		http.MethodPut,
+		http.MethodDelete:
+		client := &http.Client{}
+		req, _ := http.NewRequest(method, url, bytes.NewBuffer(body))
+		req.Header = headers
+		resp, err = client.Do(req)
 	default:
 		err = errors.New("Invalid or not implemented method: " + method)
 	}
@@ -42,14 +46,15 @@ func writeFileFromUrl(method, path string, body []byte) {
 }
 
 func writeFile(path, method string, resp *http.Response) {
-
 	body, _ := ioutil.ReadAll(resp.Body)
 	filename := getFileNameFromPath(path, method)
 	var response Response
-	err := json.Unmarshal(body, &response.Body)
-	if err != nil {
-		log.Println("Failed to marshal body:", err)
-		return
+	if len(body) > 0 {
+		err := json.Unmarshal(body, &response.Body)
+		if err != nil {
+			log.Println("Failed to marshal body:", err)
+			return
+		}
 	}
 	response.HttpCode = resp.StatusCode
 	file, err := os.Create(filename)
