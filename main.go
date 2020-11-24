@@ -29,7 +29,8 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer func() {
-		// extra handling here
+		// extra handling here if necessary
+		log.Println("Good bye")
 		cancel()
 	}()
 

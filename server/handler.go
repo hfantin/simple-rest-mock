@@ -21,7 +21,7 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	if config.Env.WriteFile {
 		writeFileFromUrl(method, path, r.Header, body)
 	}
-	log.Printf("Executing %s on %s\n", method, path)
+	log.Printf("Executing %s on %s with payload %s\n", method, path, body)
 	response, err := readFile(path, method)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, map[string]interface{}{"error": fmt.Sprintf("%s", err)})
