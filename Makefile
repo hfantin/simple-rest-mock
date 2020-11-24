@@ -7,7 +7,7 @@ update:
 	go get -u
 	go mod tidy
 
-build-all: build-linux build-arm build-win build-mac
+build-all: build-linux build-arm build-mac build-win
 
 build-linux:
 	GOOS=linux go build -o bin/srm
