@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -14,9 +15,19 @@ import (
 	"github.com/hfantin/simple-rest-mock/config"
 )
 
+const notFound = `{
+	"httpCode": 404,
+	"body":{}
+}`
+
+// type Response struct {
+// 	HttpCode int                    `json:"httpCode"`
+// 	Body     map[string]interface{} `json:"body,omitempty"`
+// }
+
 type Response struct {
-	HttpCode int                    `json:"httpCode"`
-	Body     map[string]interface{} `json:"body,omitempty"`
+	HttpCode int         `json:"httpCode"`
+	Body     interface{} `json:"body,omitempty"`
 }
 
 const jsonContentType = "application/json"
@@ -26,12 +37,15 @@ func writeFileFromUrl(method, path string, headers http.Header, body []byte) {
 	log.Printf("Writing %s of %s\n", method, url)
 	var resp *http.Response
 	var err error
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
 	switch method {
 	case http.MethodGet,
 		http.MethodPost,
 		http.MethodPut,
 		http.MethodDelete:
-		client := &http.Client{}
+		client := &http.Client{Transport: tr}
 		req, _ := http.NewRequest(method, url, bytes.NewBuffer(body))
 		req.Header = headers
 		resp, err = client.Do(req)
@@ -78,6 +92,7 @@ func writeFile(path, method string, resp *http.Response) {
 
 func readFile(path, method string) (*Response, error) {
 	fileName := getFileNameFromPath(path, method)
+	createFileIfNotExists(fileName)
 	log.Printf("Reading from %s\n", fileName)
 	file, err := os.Open(fileName)
 	if err != nil {
@@ -88,6 +103,28 @@ func readFile(path, method string) (*Response, error) {
 	var result *Response
 	err = json.Unmarshal([]byte(b), &result)
 	return result, err
+}
+
+func createFileIfNotExists(fileName string) {
+	existe := fileExists(fileName)
+	if !existe {
+		file, err := os.Create(fileName)
+		defer file.Close()
+		if err != nil {
+			log.Printf("Failed to create new file %s:%s\n", fileName, err)
+		}
+		if _, err := file.Write([]byte(notFound)); err != nil {
+			log.Printf("Failed to write data in the file %s: %s\n", fileName, err)
+		}
+	}
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
 
 func getFileNameFromPath(path, method string) string {

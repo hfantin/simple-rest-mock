@@ -34,15 +34,15 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, response.HttpCode, response.Body)
 }
 
-func respondWithError(w http.ResponseWriter, code int, body map[string]interface{}) {
+func respondWithError(w http.ResponseWriter, code int, body interface{}) {
 	respondWithJSON(w, code, body)
 }
 
-func respondWithJSON(w http.ResponseWriter, code int, body map[string]interface{}) {
+func respondWithJSON(w http.ResponseWriter, code int, body interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	if len(body) > 0 {
-		response, _ := json.Marshal(body)
-		w.Write(response)
-	}
+	// if len(body) > 0 {
+	response, _ := json.Marshal(body)
+	w.Write(response)
+	// }
 }

@@ -1,6 +1,0 @@
-{
-	"httpCode": 200,
-	"body": {
-		"msg": "v1/hello/1"
-	}
-}
