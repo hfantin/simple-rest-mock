@@ -9,15 +9,17 @@ import (
 )
 
 type environment struct {
-	ServerPort   string
-	TargetServer string
-	WriteFile    bool
+	ServerPort      string
+	TargetServer    string
+	WriteFile       bool
+	CertificatePath string
+	KeyPath         string
 }
 
 var Env *environment
 
 func init() {
-	Env = &environment{"5000", "", false}
+	Env = &environment{"5000", "", false, "", ""}
 	err := godotenv.Load()
 	if err != nil {
 		log.Println(".env not found, using default values....")
@@ -25,6 +27,8 @@ func init() {
 	Env.ServerPort = os.Getenv("SERVER_PORT")
 	Env.TargetServer = os.Getenv("TARGET_SERVER")
 	Env.WriteFile, _ = strconv.ParseBool(os.Getenv("WRITE_FILE"))
+	Env.CertificatePath = os.Getenv("CERTIFICATE_PATH")
+	Env.KeyPath = os.Getenv("KEY_PATH")
 	log.Println("environment:", Env.ServerPort, Env.TargetServer, Env.WriteFile)
 
 }
