@@ -34,3 +34,15 @@ TARGET_SERVER: this is target server where SCM will make request and record the 
 > openssl req -new -x509 -sha256 -key simple-rest-mock.key -out simple-rest-mock.crt -days 3650
 - for jvm access, import the self-signed certificate: 
 > keytool -import -trustcacerts -keystore JVM_HOME/lib/security/cacerts -storepass changeit -noprompt -alias mycert -file simple-rest-mock.crt
+
+- using with retrofit/okhttp: 
+```
+val clientCertificates = HandshakeCertificates.Builder()
+    .addPlatformTrustedCertificates()
+    .addInsecureHost("localhost")
+    .build()
+
+val client = OkHttpClient.Builder()
+    .sslSocketFactory(clientCertificates.sslSocketFactory(), clientCertificates.trustManager)
+    .build()
+```

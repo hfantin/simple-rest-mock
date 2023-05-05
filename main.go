@@ -17,13 +17,8 @@ func main() {
 	srv := server.New()
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		// if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		if err := srv.ListenAndServeTLS(config.Env.CertificatePath, config.Env.KeyPath); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
-		}
-	}()
-	log.Println("Server Started on port", config.Env.ServerPort)
+	go startServer(srv)
+	log.Printf("Server Started on port %s - https enabled? %t\n", config.Env.ServerPort, config.Env.UseHTTPS)
 
 	<-done
 	log.Println("Server Stopped")
@@ -39,4 +34,18 @@ func main() {
 		log.Fatalf("Server Shutdown Failed:%+v", err)
 	}
 	log.Println("Server Exited Properly")
+}
+
+func startServer(srv *http.Server) {
+	var err error
+	if config.Env.UseHTTPS {
+		err = srv.ListenAndServeTLS(config.Env.CertificatePath, config.Env.KeyPath)
+	} else {
+		err = srv.ListenAndServe()
+	}
+
+	if err != nil && err != http.ErrServerClosed {
+		log.Fatalf("listen: %s\n", err)
+	}
+
 }
