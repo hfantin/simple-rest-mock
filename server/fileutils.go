@@ -20,17 +20,10 @@ const notFound = `{
 	"body":{}
 }`
 
-// type Response struct {
-// 	HttpCode int                    `json:"httpCode"`
-// 	Body     map[string]interface{} `json:"body,omitempty"`
-// }
-
 type Response struct {
 	HttpCode int         `json:"httpCode"`
 	Body     interface{} `json:"body,omitempty"`
 }
-
-const jsonContentType = "application/json"
 
 func writeFileFromUrl(method, path string, headers http.Header, body []byte) {
 	url := fmt.Sprintf("%s%s", config.Env.TargetServer, path)

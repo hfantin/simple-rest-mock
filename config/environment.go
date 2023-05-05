@@ -25,6 +25,6 @@ func init() {
 	Env.ServerPort = os.Getenv("SERVER_PORT")
 	Env.TargetServer = os.Getenv("TARGET_SERVER")
 	Env.WriteFile, _ = strconv.ParseBool(os.Getenv("WRITE_FILE"))
-	log.Println("env", Env)
+	log.Println("environment:", Env.ServerPort, Env.TargetServer, Env.WriteFile)
 
 }

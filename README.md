@@ -19,3 +19,11 @@ TARGET_SERVER: this is target server where SCM will make request and record the 
 ### Rest api for tests
 - [dogs](https://dog.ceo/api/breeds/image/random)
 
+### using https: 
+- create a certificate: 
+> openssl genrsa -out server.key 2048
+- generate self-signed(x509) public key (PEM-encodings .pem|.crt) based on the private (.key)
+> openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
+- for jvm access, import the self-signed certificate: 
+> keytool -import -trustcacerts -keystore JVM_HOME/lib/security/cacerts -storepass changeit -noprompt -alias mycert -file server.crt
+> keytool -import -trustcacerts -keystore cacerts -storepass changeit -noprompt -alias mycert -file /opt/desenv/workspace/github/simple-rest-mock/server.crt

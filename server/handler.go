@@ -12,7 +12,7 @@ import (
 )
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
+	path := r.URL.String()
 	method := r.Method
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
 	if err != nil {
