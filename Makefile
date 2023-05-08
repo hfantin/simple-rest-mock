@@ -13,7 +13,7 @@ update:
 	@go get -u
 	@go mod tidy
 
-build-all: build-linux build-mac build-win copy-certificates
+build-all: build-linux build-mac build-win
 
 build-linux:
 	@GOOS=linux go build ${LD_FLAGS} -o dist/srm
