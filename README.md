@@ -16,8 +16,10 @@ USE_HTTPS=false
 ENDPOINTS=/v1/endpoint1;v1/endpoint2;
 ```
 4. start the server   
-> chmod +x simple-rest-mock &&./simple-rest-mock # linux and macos   
-> simple-rest-mock # windows   
+- linux and macos   
+> chmod +x simple-rest-mock &&./simple-rest-mock 
+-  windows   
+> simple-rest-mock.exe 
 
 ### Errors 
 - If you are receiving the message "cannot be opened because the developer cannot be verified" when executing on macos, try this command bellow:   
