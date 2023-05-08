@@ -21,7 +21,7 @@ ENDPOINTS=/v1/endpoint1;v1/endpoint2;
 
 ### Errors 
 - If you are receiving the message "cannot be opened because the developer cannot be verified" when executing on macos, try this command bellow:   
-> xattr -d com.apple.quarantine <path-to-executable>
+> xattr -d com.apple.quarantine simple-rest-mock
 ### Environment variables
 ```
 SERVER_PORT: number of the where server runs, the default is 9000   
