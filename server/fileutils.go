@@ -25,14 +25,15 @@ type Response struct {
 	Body     interface{} `json:"body,omitempty"`
 }
 
-func writeFileFromUrl(method, path string, headers http.Header, body []byte) {
+func sendRequest(method, path string, headers http.Header, body []byte) (*http.Response, error) {
 	url := fmt.Sprintf("%s%s", config.Env.TargetServer, path)
-	log.Printf("Writing %s of %s\n", method, url)
+	log.Printf("sending %s on %s\n", method, url)
 	var resp *http.Response
 	var err error
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
+
 	switch method {
 	case http.MethodGet,
 		http.MethodPost,
@@ -43,71 +44,82 @@ func writeFileFromUrl(method, path string, headers http.Header, body []byte) {
 		req.Header = headers
 		resp, err = client.Do(req)
 	default:
-		err = errors.New("Invalid or not implemented method: " + method)
+		err = errors.New("invalid or not implemented method: " + method)
 	}
 	if err != nil {
-		log.Printf("ERROR: %s\n", err)
-		return
+		return nil, err
 	}
-	writeFile(path, method, resp)
+	return resp, err
 }
 
 func writeFile(path, method string, resp *http.Response) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	filename := getFileNameFromPath(path, method)
+	// for i, v := range resp.Header {
+	// 	log.Printf("resp header %s with %s\n", i, v)
+	// }
 	var response Response
-	if len(body) > 0 {
+	contentType := resp.Header.Get("Content-type")
+	// log.Printf("content-type %s\n", contentType)
+	if len(body) > 0 && contentType == "application/json" {
 		err := json.Unmarshal(body, &response.Body)
 		if err != nil {
-			log.Println("Failed to marshal body:", err)
+			log.Println("failed to marshal body:", err)
 			return
 		}
+	} else {
+		log.Printf("can't parse body: %v\n", &response.Body)
+		return
 	}
 	response.HttpCode = resp.StatusCode
 	file, err := os.Create(filename)
-	defer file.Close()
 	if err != nil {
-		log.Printf("Failed to create new file %s:%s\n", filename, err)
+		log.Printf("failed to create new file %s:%s\n", filename, err)
 		return
 	}
+	defer file.Close()
 	json, err := json.MarshalIndent(&response, "", "\t")
 	if err != nil {
-		log.Printf("Failed to marshal json %s: %s\n", filename, err)
+		log.Printf("failed to marshal json %s: %s\n", filename, err)
 		return
 	}
 	if _, err := file.Write(json); err != nil {
-		log.Printf("Failed to write data in the file %s: %s\n", filename, err)
+		log.Printf("failed to write data in the file %s: %s\n", filename, err)
 		return
 	}
-	log.Printf("Data successfully recorded in the file %s %s %s\n!", filename, body, json)
+	// log.Printf("Data successfully recorded in the file %s %s %s\n!", filename, body, json)
+	log.Printf("data successfully recorded in the file %s \n!", filename)
 
 }
 
 func readFile(path, method string) (*Response, error) {
 	fileName := getFileNameFromPath(path, method)
 	createFileIfNotExists(fileName)
-	log.Printf("Reading from %s\n", fileName)
+	log.Printf("reading from %s\n", fileName)
 	file, err := os.Open(fileName)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 	b, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
 	var result *Response
 	err = json.Unmarshal([]byte(b), &result)
 	return result, err
 }
 
 func createFileIfNotExists(fileName string) {
-	existe := fileExists(fileName)
-	if !existe {
+	exists := fileExists(fileName)
+	if !exists {
 		file, err := os.Create(fileName)
-		defer file.Close()
 		if err != nil {
-			log.Printf("Failed to create new file %s:%s\n", fileName, err)
+			log.Printf("failed to create new file %s:%s\n", fileName, err)
 		}
+		defer file.Close()
 		if _, err := file.Write([]byte(notFound)); err != nil {
-			log.Printf("Failed to write data in the file %s: %s\n", fileName, err)
+			log.Printf("failed to write data in the file %s: %s\n", fileName, err)
 		}
 	}
 }

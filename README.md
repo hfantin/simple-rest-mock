@@ -20,9 +20,13 @@ KEY_PATH=certs/simple-rest-mock.key
 5. When you call for localhost:5000/v1/items, you will receive the content of the file as response.    
 
 ### Environment variables
-SERVER_PORT: number of the where server runs, the default is 5000   
+SERVER_PORT: number of the where server runs, the default is 9000   
 WRITE_FILE: this flag enables recording requests to a file   
 TARGET_SERVER: this is target server where SCM will make request and record the response when WRITE_FILE is enabled
+USE_HTTPS=false
+CERTIFICATE_PATH=certs/simple-rest-mock.crt
+KEY_PATH=certs/simple-rest-mock.key
+ENDPOINTS=/v1/endpoint1;v1/endpoint2;
 
 ### Rest api for tests
 - [dogs](https://dog.ceo/api/breeds/image/random)
@@ -34,15 +38,3 @@ TARGET_SERVER: this is target server where SCM will make request and record the 
 > openssl req -new -x509 -sha256 -key simple-rest-mock.key -out simple-rest-mock.crt -days 3650
 - for jvm access, import the self-signed certificate: 
 > keytool -import -trustcacerts -keystore JVM_HOME/lib/security/cacerts -storepass changeit -noprompt -alias mycert -file simple-rest-mock.crt
-
-- using with retrofit/okhttp: 
-```
-val clientCertificates = HandshakeCertificates.Builder()
-    .addPlatformTrustedCertificates()
-    .addInsecureHost("localhost")
-    .build()
-
-val client = OkHttpClient.Builder()
-    .sslSocketFactory(clientCertificates.sslSocketFactory(), clientCertificates.trustManager)
-    .build()
-```
