@@ -16,9 +16,9 @@ WRITE_FILE=false
 USE_HTTPS=false
 ENDPOINTS=/v1/endpoint1;v1/endpoint2;
 ```
-4. start the server
-> chmod +x simple-rest-mock &&./simple-rest-mock # linux and macos
-> simple-rest-mock # windows
+4. start the server   
+> chmod +x simple-rest-mock &&./simple-rest-mock # linux and macos   
+> simple-rest-mock # windows   
 
 ### Environment variables
 ```
