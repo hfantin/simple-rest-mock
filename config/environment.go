@@ -41,7 +41,7 @@ func init() {
 			return c == ';'
 		})
 	}
-	fmt.Println("Simple rest mock configuration:")
+	showBanner(versionNumber)
 	fmt.Printf("- server port: %s\n", Env.ServerPort)
 	fmt.Printf("- targetServer: %s\n", Env.TargetServer)
 	fmt.Printf("- write file: %t\n", Env.WriteFile)
@@ -54,4 +54,16 @@ func init() {
 	for _, v := range Env.Endpoints {
 		fmt.Println("  ", v)
 	}
+}
+
+func showBanner(version string) {
+	banner := `
+███████ ██ ███    ███ ██████  ██      ███████     ██████  ███████ ███████ ████████     ███    ███  ██████   ██████ ██   ██
+██      ██ ████  ████ ██   ██ ██      ██          ██   ██ ██      ██         ██        ████  ████ ██    ██ ██      ██  ██
+███████ ██ ██ ████ ██ ██████  ██      █████       ██████  █████   ███████    ██        ██ ████ ██ ██    ██ ██      █████
+     ██ ██ ██  ██  ██ ██      ██      ██          ██   ██ ██           ██    ██        ██  ██  ██ ██    ██ ██      ██  ██
+███████ ██ ██      ██ ██      ███████ ███████     ██   ██ ███████ ███████    ██        ██      ██  ██████   ██████ ██   ██
+                                                                                                           version %s
+`
+	fmt.Printf(banner, version)
 }

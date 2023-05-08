@@ -1,0 +1,4 @@
+Makefile linguist-vendored
+Dockerfile linguist-vendored
+docker-compose.yml linguist-vendored
+.files/** linguist-vendored
