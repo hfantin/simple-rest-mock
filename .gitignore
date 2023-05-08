@@ -1,2 +1,4 @@
 .env
-bin/simple-rest-mock.*
+bin/
+dist/
+.files/
