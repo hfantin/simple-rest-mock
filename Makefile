@@ -7,7 +7,7 @@ print-version:
 	@echo "building version ${VERSION}"
 
 clean: 
-	@rm -rf bin
+	@rm -rf dist
 
 update: 
 	@go get -u
@@ -16,22 +16,22 @@ update:
 build-all: build-linux build-mac build-win copy-certificates
 
 build-linux:
-	@GOOS=linux go build ${LD_FLAGS} -o bin/srm
+	@GOOS=linux go build ${LD_FLAGS} -o dist/srm
 
 build-arm:
-	@GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build ${LD_FLAGS} -o bin/srm.arm
+	@GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build ${LD_FLAGS} -o dist/srm.arm
 
 build-mac:
-	@GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build ${LD_FLAGS} -o bin/srm.app
+	@GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build ${LD_FLAGS} -o dist/srm.app
 
 build-win:
-	@GOOS=windows GOARCH=386 CGO_ENABLED=0 go build ${LD_FLAGS} -o bin/srm.exe
+	@GOOS=windows GOARCH=386 CGO_ENABLED=0 go build ${LD_FLAGS} -o dist/srm.exe
 
 create-git-tag: 
 	@git tag -af v${VERSION} -m "v${VERSION}"
 
 copy-certificates: 
-	@cp certs/* ./bin
+	@cp certs/* ./dist
 
 docker: 
 	@docker build -t srm .

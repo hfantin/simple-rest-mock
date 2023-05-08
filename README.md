@@ -50,7 +50,10 @@ ENDPOINTS= list of endpoints intercepted separated by ;
 ### creating a release
 > git tag -a v0.x.x -m "v0.x.x" && git push origin v0.x.x
 > export GITHUB_TOKEN=<TOKEN_HERE>
-> goreleaser release --skip-publish 
+- publid release
+> goreleaser release
+- local release
+> goreleaser release --snapshot --clean 
 
 ### links
 - [How to Publish Your Golang Binaries with Goreleaser](https://www.kosli.com/blog/how-to-publish-your-golang-binaries-with-goreleaser/)

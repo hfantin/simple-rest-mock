@@ -8,12 +8,21 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 builds:
-  - env:
-      - CGO_ENABLED=0
-    goos:
-      - linux
-      - windows
-      - darwin
+- id: srm
+  binary: srm
+    # Custom ldflags.
+    #
+    # Default: 's -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser'
+    # Templates: allowed
+  ldflags:
+    - -s -w -X github.com/hfantin/simple-rest-mock/config.versionNumber={{.Version}}
+    # - ./usemsan=-msan
+  env:
+    - CGO_ENABLED=0
+  goos:
+    - linux
+    - windows
+    - darwin
 
 archives:
   - format: binary
@@ -25,10 +34,6 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    # use zip for windows archives
-    format_overrides:
-    - goos: windows
-      format: zip
 checksum:
   name_template: 'checksums.txt'
 snapshot:
