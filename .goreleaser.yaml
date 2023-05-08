@@ -2,6 +2,7 @@
 # Make sure to check the documentation at https://goreleaser.com
 before:
   hooks:
+    - go get -u
     # You may remove this if you don't use go modules.
     - go mod tidy
     # you may remove this if you don't need go generate

@@ -5,8 +5,7 @@ This project aims to intercept your requests to a target server and return a jso
 - use **make** in the root folder, this will generate .bin folder with the binaries
   
 ### How to use
-1. Choose a binary [here](https://github.com/hfantin/simple-rest-mock/releases)   
-
+1. Choose a binary [here](https://github.com/hfantin/simple-rest-mock/releases)    
 2. unzip your binary
 3. create a new .env file or the env variables: 
 ```
@@ -20,6 +19,9 @@ ENDPOINTS=/v1/endpoint1;v1/endpoint2;
 > chmod +x simple-rest-mock &&./simple-rest-mock # linux and macos   
 > simple-rest-mock # windows   
 
+### Errors 
+- If you are receiving the message "cannot be opened because the developer cannot be verified" when executing on macos, try this command bellow:   
+> xattr -d com.apple.quarantine <path-to-executable>
 ### Environment variables
 ```
 SERVER_PORT: number of the where server runs, the default is 9000   
