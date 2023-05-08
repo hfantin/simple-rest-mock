@@ -1,25 +1,27 @@
 # SRM - Simple Rest Mock
-This project aims to intercept your requests to a target server and return a json mock to the chosen endpoints.
+This project aims to intercept the target server request and return a mock json to the chosen endpoints.
 
-### How to build
-- use **make** in the root folder, this will generate .bin folder with the binaries
+### Building this project:
+- using [goreleaser](https://goreleaser.com/install/): 
+> goreleaser release --snapshot --clean 
+- using makefile: 
+> make
   
-### How to use
-1. Choose a binary [here](https://github.com/hfantin/simple-rest-mock/releases)    
-2. unzip your binary
-3. create a new .env file or the env variables: 
+### Downloading binaries: 
+1. Choose a binary [here](https://github.com/hfantin/simple-rest-mock/releases) according to your operating system    
+2. create a new .env file or set the env variables: 
 ```
-SERVER_PORT=9443
+SERVER_PORT=9000
 TARGET_SERVER=<YOUR_TARGET_SERVER>
 WRITE_FILE=false
 USE_HTTPS=false
 ENDPOINTS=/v1/endpoint1;v1/endpoint2;
 ```
-4. start the server   
+3. start the server   
 - linux and macos   
-> chmod +x simple-rest-mock &&./simple-rest-mock 
+> chmod +x srm && ./srm
 -  windows   
-> simple-rest-mock.exe 
+> srm.exe 
 
 ### Errors 
 - If you are receiving the message "cannot be opened because the developer cannot be verified" when executing on macos, try this command bellow:   
@@ -50,8 +52,8 @@ ENDPOINTS= list of endpoints intercepted separated by ;
 ### creating a release
 > git tag -a v0.x.x -m "v0.x.x" && git push origin v0.x.x
 > export GITHUB_TOKEN=<TOKEN_HERE>
-- publid release
-> goreleaser release
+- publish release 
+> goreleaser release --skip-publish
 - local release
 > goreleaser release --snapshot --clean 
 
