@@ -1,32 +1,40 @@
 # SRM - Simple Rest Mock
 This project is to help you mock responses from a rest api server.    
 
+### How to build
+- use **make** in the root folder, this will generate .bin folder with the binaries
+  
 ### How to use
-1. Build the project using **make** in the root.
-2. Choose a binary, for example, **./bin/srm** 
-3. Write your json files in the .files directory, like the example below:   
+1. Choose a binary according to your OS in the ./bin folder: 
+   a. srm for linux   
+   b. srm.exe for windows   
+   c. srm.app for macos   
+2. Write your json files in the .files directory, like the example below:   
 ```
 endpoint: /v1/items
 file: .files/items.GET.json
 ```
-4. create .env file: 
+3. create .env file: 
 ```
 SERVER_PORT=9443
 TARGET_SERVER=<YOUR_TARGET_SERVER>
-WRITE_FILE=true
+WRITE_FILE=false
+USE_HTTPS=false
 CERTIFICATE_PATH=certs/simple-rest-mock.crt
 KEY_PATH=certs/simple-rest-mock.key
+ENDPOINTS=/v1/endpoint1;v1/endpoint2;
 ```
-5. When you call for localhost:5000/v1/items, you will receive the content of the file as response.    
+4. When you call for localhost:9000/v1/items, you will receive the content of the file as response.    
+
 
 ### Environment variables
 SERVER_PORT: number of the where server runs, the default is 9000   
 WRITE_FILE: this flag enables recording requests to a file   
 TARGET_SERVER: this is target server where SCM will make request and record the response when WRITE_FILE is enabled
-USE_HTTPS=false
+USE_HTTPS= to use https 
 CERTIFICATE_PATH=certs/simple-rest-mock.crt
 KEY_PATH=certs/simple-rest-mock.key
-ENDPOINTS=/v1/endpoint1;v1/endpoint2;
+ENDPOINTS= list of endpoints separated by ;
 
 ### Rest api for tests
 - [dogs](https://dog.ceo/api/breeds/image/random)

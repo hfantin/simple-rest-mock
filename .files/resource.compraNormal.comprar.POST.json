@@ -4,7 +4,7 @@
 		"adesaoCompraProtegidaBB": false,
 		"apiCliente": {
 			"acao": null,
-			"autorizaAPI": true,
+			"autorizaAPI": false,
 			"codigoCanal": null,
 			"codigoCliente": null,
 			"codigoEstadoQuestionarioCliente": 2,

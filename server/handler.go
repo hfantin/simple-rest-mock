@@ -24,17 +24,16 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("failed to read body")
 	}
 	isEndpointIntercepted := contains(config.Env.Endpoints, endpoint)
-	if config.Env.WriteFile && isEndpointIntercepted {
-		resp, err := sendRequest(method, path, r.Header, body)
-		if err != nil {
-			log.Printf("ERROR: %s\n", err)
-			return
-		}
-		writeFile(endpoint, method, resp)
-	}
-
 	if isEndpointIntercepted {
 		log.Printf("intercepting %s request\n", endpoint)
+		if config.Env.WriteFile {
+			resp, err := sendRequest(method, path, r.Header, body)
+			if err != nil {
+				log.Printf("ERROR: %s\n", err)
+				return
+			}
+			writeFile(endpoint, method, resp)
+		}
 		response, err := readFile(endpoint, method)
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, map[string]interface{}{"error": fmt.Sprintf("%s", err)})
