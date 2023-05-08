@@ -5,7 +5,7 @@ This project is to help you mock responses from a rest api server.
 - use **make** in the root folder, this will generate .bin folder with the binaries
   
 ### How to use
-1. Choose a binary according to your OS in the ./bin folder: 
+1. Choose a binary according to your OS in the ./bin folder:    
    a. srm for linux   
    b. srm.exe for windows   
    c. srm.app for macos   
