@@ -1,5 +1,5 @@
 # SRM - Simple Rest Mock
-This project is to help you mock responses from a rest api server.    
+This project aims to intercept your requests to a target server and return a json mock to the chosen endpoints.
 
 ### How to build
 - use **make** in the root folder, this will generate .bin folder with the binaries
@@ -8,7 +8,7 @@ This project is to help you mock responses from a rest api server.
 1. Choose a binary [here](https://github.com/hfantin/simple-rest-mock/releases)   
 
 2. unzip your binary
-3. create .env file: 
+3. create a new .env file or the env variables: 
 ```
 SERVER_PORT=9443
 TARGET_SERVER=<YOUR_TARGET_SERVER>
@@ -28,7 +28,7 @@ TARGET_SERVER: this is target server where SCM will make request and record the 
 USE_HTTPS= to use https 
 CERTIFICATE_PATH=certs/simple-rest-mock.crt
 KEY_PATH=certs/simple-rest-mock.key
-ENDPOINTS= list of endpoints separated by ;
+ENDPOINTS= list of endpoints intercepted separated by ;
 ```
 
 ### Rest api for tests
