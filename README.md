@@ -1,3 +1,7 @@
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/hfantin/simple-rest-mock)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/hfantin/simple-rest-mock)
+
+
 # SRM - Simple Rest Mock
 This project aims to intercept the target server request and return a mock json to the chosen endpoints.
 
