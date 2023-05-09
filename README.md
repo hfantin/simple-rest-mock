@@ -1,5 +1,6 @@
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/hfantin/simple-rest-mock)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/hfantin/simple-rest-mock)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/hfantin/simple-rest-mock)
+![GitHub](https://img.shields.io/github/license/hfantin/simple-rest-mock)
 
 
 # SRM - Simple Rest Mock
