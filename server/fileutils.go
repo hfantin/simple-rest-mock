@@ -55,13 +55,9 @@ func sendRequest(method, path string, headers http.Header, body []byte) (*http.R
 func writeFile(path, method string, resp *http.Response) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	filename := getFileNameFromPath(path, method)
-	// for i, v := range resp.Header {
-	// 	log.Printf("resp header %s with %s\n", i, v)
-	// }
 	var response Response
 	contentType := resp.Header.Get("Content-type")
-	// log.Printf("content-type %s\n", contentType)
-	if len(body) > 0 && contentType == "application/json" {
+	if len(body) > 0 && strings.Contains(contentType, "application/json") {
 		err := json.Unmarshal(body, &response.Body)
 		if err != nil {
 			log.Println("failed to marshal body:", err)

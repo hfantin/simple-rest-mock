@@ -8,7 +8,7 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 builds:
-- id: srm
+- id: "srm"
   binary: srm
     # Custom ldflags.
     #
@@ -23,6 +23,7 @@ builds:
     - linux
     - windows
     - darwin
+  no_unique_dist_dir: false
 
 archives:
   - format: binary

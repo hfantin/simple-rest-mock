@@ -13,7 +13,7 @@ This project aims to intercept the target server request and return a mock json 
 ```
 SERVER_PORT=9000
 TARGET_SERVER=<YOUR_TARGET_SERVER>
-WRITE_FILE=false
+WRITE_FILE=true
 USE_HTTPS=false
 ENDPOINTS=/v1/endpoint1;v1/endpoint2;
 ```
@@ -22,6 +22,8 @@ ENDPOINTS=/v1/endpoint1;v1/endpoint2;
 > chmod +x srm && ./srm
 -  windows   
 > srm.exe 
+
+Obs.: at first, use the **WRITE_FILE=true** to record the responses in .files/ folder, then change it to false and restart the server when it is done.
 
 ### Errors 
 - If you are receiving the message "cannot be opened because the developer cannot be verified" when executing on macos, try this command bellow:   
