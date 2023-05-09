@@ -1,7 +1,7 @@
 {
     "name":"srm", 
     "group": "github.com/hfantin/simple-rest-mock", 
-    "version":"0.1.4",
+    "version":"0.1.5",
     "description": "srm - simple rest mock",
     "author": "Hamilton Geraldo Fantin"
 }
