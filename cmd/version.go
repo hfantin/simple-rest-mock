@@ -1,3 +1,3 @@
-package config
+package cmd
 
 var versionNumber string

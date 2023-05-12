@@ -1,18 +1,17 @@
-package server
+package cmd
 
 import (
 	"bytes"
+	"compress/gzip"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/hfantin/simple-rest-mock/config"
 )
 
 const notFound = `{
@@ -26,9 +25,10 @@ type Response struct {
 }
 
 func sendRequest(method, path string, headers http.Header, body []byte) (*http.Response, error) {
-	url := fmt.Sprintf("%s%s", config.Env.TargetServer, path)
-	log.Printf("sending %s on %s\n", method, url)
+	url := fmt.Sprintf("%s%s", configuration.TargetServer, path)
+	log.Printf("%s %s\n", method, url)
 	var resp *http.Response
+	var req *http.Request
 	var err error
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
@@ -40,7 +40,10 @@ func sendRequest(method, path string, headers http.Header, body []byte) (*http.R
 		http.MethodPut,
 		http.MethodDelete:
 		client := &http.Client{Transport: tr}
-		req, _ := http.NewRequest(method, url, bytes.NewBuffer(body))
+		req, err = http.NewRequest(method, url, bytes.NewBuffer(body))
+		if err != nil {
+			return nil, err
+		}
 		req.Header = headers
 		resp, err = client.Do(req)
 	default:
@@ -53,28 +56,41 @@ func sendRequest(method, path string, headers http.Header, body []byte) (*http.R
 }
 
 func writeFile(path, method string, resp *http.Response) {
-	body, _ := ioutil.ReadAll(resp.Body)
 	filename := getFileNameFromPath(path, method)
-	var response Response
+	var jsonResponse Response
+	var body []byte
 	contentType := resp.Header.Get("Content-type")
+	contentEncoding := resp.Header.Get("Content-Encoding")
+	defer resp.Body.Close()
+	if contentEncoding == "gzip" {
+		gReader, err := gzip.NewReader(resp.Body)
+		if err != nil {
+			log.Println("can't uncompress body:", err)
+			return
+		}
+		body, _ = io.ReadAll(gReader)
+		gReader.Close()
+	} else {
+		body, _ = io.ReadAll(resp.Body)
+	}
 	if len(body) > 0 && strings.Contains(contentType, "application/json") {
-		err := json.Unmarshal(body, &response.Body)
+		err := json.Unmarshal(body, &jsonResponse.Body)
 		if err != nil {
 			log.Println("failed to marshal body:", err)
 			return
 		}
 	} else {
-		log.Printf("can't parse body: %v\n", &response.Body)
+		log.Printf("can't parse body: %v\n", body)
 		return
 	}
-	response.HttpCode = resp.StatusCode
+	jsonResponse.HttpCode = resp.StatusCode
 	file, err := os.Create(filename)
 	if err != nil {
 		log.Printf("failed to create new file %s:%s\n", filename, err)
 		return
 	}
 	defer file.Close()
-	json, err := json.MarshalIndent(&response, "", "\t")
+	json, err := json.MarshalIndent(&jsonResponse, "", "\t")
 	if err != nil {
 		log.Printf("failed to marshal json %s: %s\n", filename, err)
 		return
@@ -83,9 +99,7 @@ func writeFile(path, method string, resp *http.Response) {
 		log.Printf("failed to write data in the file %s: %s\n", filename, err)
 		return
 	}
-	// log.Printf("Data successfully recorded in the file %s %s %s\n!", filename, body, json)
-	log.Printf("data successfully recorded in the file %s \n!", filename)
-
+	log.Printf("data successfully recorded in the file %s \n", filename)
 }
 
 func readFile(path, method string) (*Response, error) {
@@ -97,7 +111,7 @@ func readFile(path, method string) (*Response, error) {
 		return nil, err
 	}
 	defer file.Close()
-	b, err := ioutil.ReadAll(file)
+	b, err := io.ReadAll(file)
 	if err != nil {
 		return nil, err
 	}
@@ -129,8 +143,21 @@ func fileExists(filename string) bool {
 }
 
 func getFileNameFromPath(path, method string) string {
-	if strings.HasPrefix(path, "/") {
-		path = path[1:]
+	home, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
-	return fmt.Sprintf("%s/%s.%s.json", FILE_PATH, strings.ReplaceAll(path, "/", "."), method)
+	jsonFolder := fmt.Sprintf("%s/.srm/%s", home, configuration.ResponseFilesPath)
+	newPath := strings.TrimPrefix(path, "/")
+	return fmt.Sprintf("%s/%s.%s.json", jsonFolder, strings.ReplaceAll(newPath, "/", "."), method)
+}
+
+func contains[T comparable](elems []T, v T) bool {
+	for _, s := range elems {
+		if v == s {
+			return true
+		}
+	}
+	return false
 }

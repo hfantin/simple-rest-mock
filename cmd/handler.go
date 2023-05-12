@@ -1,32 +1,26 @@
-package server
+package cmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
-
-	"github.com/hfantin/simple-rest-mock/config"
 )
-
-// TODO dinamic list
-// var endpoints []string = []string{"/resource/calculoValorBloquear/calcular"}
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.String()
 	endpoint := r.URL.Path
 	method := r.Method
 
-	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+	body, err := io.ReadAll(io.LimitReader(r.Body, 1048576))
 	if err != nil {
 		log.Println("failed to read body")
 	}
-	isEndpointIntercepted := contains(config.Env.Endpoints, endpoint)
+	isEndpointIntercepted := contains(configuration.Endpoints, endpoint)
 	if isEndpointIntercepted {
 		log.Printf("intercepting %s request\n", endpoint)
-		if config.Env.WriteFile {
+		if configuration.RecResponse {
 			resp, err := sendRequest(method, path, r.Header, body)
 			if err != nil {
 				log.Printf("ERROR: %s\n", err)
