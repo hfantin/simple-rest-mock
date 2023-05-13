@@ -1,12 +1,10 @@
-package server
+package cmd
 
 import (
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
-
-const FILE_PATH = ".files"
 
 func NewRouter() *mux.Router {
 	router := mux.NewRouter()
