@@ -25,8 +25,13 @@ func startServer() {
 		}
 	}()
 
-	fmt.Printf("starting server on port %s\n", configuration.Port)
-	fmt.Println("intercepting endpoints:")
+	fmt.Printf("starting server on port %s - target %s\n", configuration.Port, configuration.TargetServer)
+	if configuration.RecMode {
+		fmt.Printf("intercepting endpoints in recording mode:\n")
+	} else {
+		fmt.Printf("intercepting endpoints:\n")
+	}
+
 	for _, e := range configuration.Endpoints {
 		fmt.Println("-", e)
 	}

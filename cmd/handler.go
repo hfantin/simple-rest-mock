@@ -20,7 +20,7 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	isEndpointIntercepted := contains(configuration.Endpoints, endpoint)
 	if isEndpointIntercepted {
 		log.Printf("intercepting %s request\n", endpoint)
-		if configuration.RecResponse {
+		if configuration.RecMode {
 			resp, err := sendRequest(method, path, r.Header, body)
 			if err != nil {
 				log.Printf("ERROR: %s\n", err)

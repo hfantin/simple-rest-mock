@@ -26,7 +26,7 @@ Flags:
 2. use the flags or create a new $HOME/.srm/config.yaml file with the content below: 
 ```
 port: 5000                       # default is 9000
-rec-response: true               # default is false
+rec-mode: true                   # default is false
 response-files-path: resp-jsons  # default is $HOME/.srm/jsons
 target-server: https://catfact.ninja
 endpoints:

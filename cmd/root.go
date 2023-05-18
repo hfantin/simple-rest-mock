@@ -17,7 +17,7 @@ var cfgFile string
 type Config struct {
 	Port              string   `mapstructure:"port"`
 	TargetServer      string   `mapstructure:"target-server"`
-	RecResponse       bool     `mapstructure:"rec-response"`
+	RecMode           bool     `mapstructure:"rec-mode"`
 	Endpoints         []string `mapstructure:"endpoints"`
 	ResponseFilesPath string   `mapstructure:"response-files-path"`
 }
@@ -29,6 +29,7 @@ var rootCmd = &cobra.Command{
 	Short: "Simple Rest Mock",
 	Long:  `Simple Rest Mock is a request/response interceptor that can replace the response of the target server returning the mock file content`,
 	Run: func(cmd *cobra.Command, args []string) {
+		showBanner()
 		validate()
 		createResponseFilesDir()
 		startServer()
@@ -56,7 +57,7 @@ func validate() {
 }
 
 func init() {
-	showBanner()
+
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.srm/config.yaml)")
 	// define flags
@@ -77,7 +78,7 @@ func init() {
 func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
-		fmt.Println("using custom config file", cfgFile)
+		// fmt.Println("using custom config file", cfgFile)
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
@@ -99,8 +100,9 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "reading configuration from", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		// fmt.Fprintln(os.Stderr, "reading configuration from", viper.ConfigFileUsed())
+		fmt.Fprintln(os.Stderr, "failed to read configuration file", err)
 	}
 
 	err := viper.Unmarshal(&configuration)
