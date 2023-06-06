@@ -52,6 +52,13 @@ func sendRequest(method, path string, headers http.Header, body []byte) (*http.R
 	if err != nil {
 		return nil, err
 	}
+	// log response body
+	if configuration.LogResponse {
+		b, _ := io.ReadAll(resp.Body)
+		fmt.Println("response body:", string(b))
+		resp.Body = io.NopCloser(bytes.NewBuffer(b))
+	}
+
 	return resp, err
 }
 

@@ -20,6 +20,7 @@ type Config struct {
 	RecMode           bool     `mapstructure:"rec-mode"`
 	Endpoints         []string `mapstructure:"endpoints"`
 	ResponseFilesPath string   `mapstructure:"response-files-path"`
+	LogResponse       bool     `mapstructure:"log-response"`
 }
 
 var configuration *Config
@@ -57,7 +58,6 @@ func validate() {
 }
 
 func init() {
-
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.srm/config.yaml)")
 	// define flags
@@ -66,12 +66,14 @@ func init() {
 	rootCmd.Flags().BoolP("rec-mode", "r", false, "recorde response")
 	rootCmd.Flags().StringSliceP("endpoints", "e", []string{}, "endpoints filtered by regex")
 	rootCmd.Flags().StringP("response-files-path", "f", "jsons", "path to write response files")
+	rootCmd.Flags().BoolP("log-response", "l", false, "log response")
 	// bind flags from yaml file
 	viper.BindPFlag("port", rootCmd.Flags().Lookup("port"))
 	viper.BindPFlag("target-server", rootCmd.Flags().Lookup("target-server"))
 	viper.BindPFlag("rec-mode", rootCmd.Flags().Lookup("rec-mode"))
 	viper.BindPFlag("endpoints", rootCmd.Flags().Lookup("endpoints"))
 	viper.BindPFlag("response-files-path", rootCmd.Flags().Lookup("response-files-path"))
+	viper.BindPFlag("log-response", rootCmd.Flags().Lookup("log-response"))
 }
 
 // initConfig reads in config file and ENV variables if set.

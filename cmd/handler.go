@@ -41,12 +41,13 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		resp, err := sendRequest(method, path, r.Header, body)
 		if err != nil {
+			log.Printf("failed to send request %s:%v\n", path, err)
 			respondWithError(w, resp.StatusCode, resp.Body)
+			return
 		}
 		for k := range resp.Header {
 			w.Header().Set(k, resp.Header.Get(k))
 		}
-		w.WriteHeader(resp.StatusCode)
 		io.Copy(w, resp.Body)
 	}
 

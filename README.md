@@ -14,6 +14,7 @@ Flags:
       --config string                config file (default is $HOME/.srm/config.yaml)
   -e, --endpoints strings            endpoints filtered by regex
   -h, --help                         help for srm
+  -l, --log-response                 log response
   -p, --port string                  server port (default "9000")
   -r, --rec-mode                     recorde response
   -f, --response-files-path string   path to write response files (default "jsons")
@@ -27,6 +28,7 @@ Flags:
 ```
 port: 5000                       # default is 9000
 rec-mode: true                   # default is false
+log-response: false
 response-files-path: resp-jsons  # default is $HOME/.srm/jsons
 target-server: https://catfact.ninja
 endpoints:
