@@ -1,7 +1,12 @@
 VERSION:=$(shell sed -nE '/version/{s/.*:\s*"(.*)",/\1/p;q;}' build.json | xargs)
 LD_FLAGS:=-ldflags "-X 'github.com/hfantin/simple-rest-mock/config.versionNumber=${VERSION}'"
 
-all: print-version clean update build-all create-git-tag
+all: print-version clean update build-all
+
+release: 
+	@git tag -af v${VERSION} -m "v${VERSION}"
+	@git push origin v${VERSION}
+	@goreleaser release
 	
 print-version: 
 	@echo "building version ${VERSION}"
@@ -26,9 +31,6 @@ build-mac:
 
 build-win:
 	@GOOS=windows GOARCH=386 CGO_ENABLED=0 go build ${LD_FLAGS} -o dist/srm.exe
-
-create-git-tag: 
-	@git tag -af v${VERSION} -m "v${VERSION}"
 
 copy-certificates: 
 	@cp certs/* ./dist
