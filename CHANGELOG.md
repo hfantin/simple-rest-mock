@@ -1,8 +1,8 @@
 # changelog
 based on [Semantic Versioning](https://semver.org/spec/v2.0.0.html).   
 
-## [0.2.3] - 2023-06-
-- changes here...
+## [0.2.3] - 2023-06-10
+- fix request error handling
 ## [0.2.2] - 2023-06-08
 - add log-response
 ## [0.2.1] - 2023-05-17

@@ -42,7 +42,11 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 		resp, err := sendRequest(method, path, r.Header, body)
 		if err != nil {
 			log.Printf("failed to send request %s:%v\n", path, err)
-			respondWithError(w, resp.StatusCode, resp.Body)
+			if resp == nil {
+				respondWithError(w, 500, err.Error())
+			} else {
+				respondWithError(w, resp.StatusCode, resp.Body)
+			}
 			return
 		}
 		for k := range resp.Header {
