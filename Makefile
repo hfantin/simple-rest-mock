@@ -6,6 +6,7 @@ all: print-version clean update build-all
 release: 
 	@git tag -af v${VERSION} -m "v${VERSION}"
 	@git push origin v${VERSION}
+	@rm -rf dist
 	@goreleaser release
 	
 print-version: 
